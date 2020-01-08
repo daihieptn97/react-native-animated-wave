@@ -1,9 +1,9 @@
 /**
- * Sample React Native App
+ *
  * https://github.com/facebook/react-native
  *
- * @format
- * @flow
+ * @author : Trần Đại hiệp
+ * @link : https://github.com/daihieptn97/react-native-animated-wave
  */
 
 import React, {Component} from 'react';
@@ -20,47 +20,78 @@ import {
     Easing
 } from 'react-native';
 
-let numberAnimation = 4;
+const DEFAULT_NUMBER_LAYER = 6;
 let animWaveTimes = [];
 let animWaveTimeOPs = [];
+const DEFAULT_SIZE_OVAN = 150;
+const DEFAULT_COLOR_OVAN = 'rgba(33,151,56,0.34)';
+const DEFAULT_SIZE_ZOOM = 2;
+const DEFAULT_SOUCE_IMG = null;
+const DEFAULT_ICON = null;
+
 
 class AnimatedWave extends Component {
-    constructor() {
+    constructor(props) {
         super();
         this.waveTime = [];
         this.waveTimeOP = [];
-        this.state = {
-            numberLoop: 100,
-            funcLoop: null
-        };
         this.init();
+        this.setValueDefault();
+        this.state = {
+            run: true
+        }
     }
 
+    getNumberLayer() {
+        const {numberlayer} = this.props;
+        return numberlayer;
+    }
+
+    getSizeOvan() {
+        const {sizeOvan} = this.props;
+        return sizeOvan;
+    }
+
+    getColor() {
+        const {colorOvan} = this.props;
+        return colorOvan;
+    }
+
+    getSizeZoom() {
+        const {zoom} = this.props;
+        return zoom;
+    }
+
+    getSourceIMG() {
+        const {source} = this.props;
+        return source;
+    }
+
+
     init() {
-        for (let i = 0; i < numberAnimation; i++) {
+        for (let i = 0; i < DEFAULT_NUMBER_LAYER; i++) {
             this.waveTime[i] = new Animated.Value(0.3);
             this.waveTimeOP[i] = new Animated.Value(0.7);
         }
     }
 
     setValueDefault() {
-        for (let i = 0; i < numberAnimation; i++) {
+        for (let i = 0; i < DEFAULT_NUMBER_LAYER; i++) {
             this.waveTime[i].setValue(0.3);
             this.waveTimeOP[i].setValue(0.7);
         }
     }
 
     componentDidMount(): void {
-
-        for (let i = 0; i < numberAnimation; i++) {
+        for (let i = 0; i < DEFAULT_NUMBER_LAYER; i++) {
             animWaveTimes.push(
                 Animated.timing(
                     this.waveTime[i],
                     {
-                        toValue: 2,
-                        duration: 3000,
+                        toValue: this.getSizeZoom(),
+                        duration: i === 0 ? 1000 : 1500,
                         easing: Easing.in(),
-                        friction: 10000,
+                        friction: 10,
                     }
                 )
             );
@@ -70,22 +101,18 @@ class AnimatedWave extends Component {
                     this.waveTimeOP[i],
                     {
                         toValue: 0,
-                        duration: 6000,
+                        duration: i === 0 ? 2000 : 2500,
                     }
                 )
             );
         }
-
-        this.spring();
-
-
     }
 
-    spring() {
+    runAnimation() {
 
         let a = Animated.loop(
             Animated.parallel([
-                Animated.stagger(800, animWaveTimes),
+                Animated.stagger(600, animWaveTimes),
                 Animated.stagger(800, animWaveTimeOPs),
             ])
         );
@@ -97,56 +124,98 @@ class AnimatedWave extends Component {
 
     renderWave = () => {
         const arr = [];
-        for (let i = 0; i < numberAnimation; i++) {
+        for (let i = 0; i < DEFAULT_NUMBER_LAYER; i++) {
             arr.push(
                 <Animated.View key={i}
                                style={[styles.wave, {
                                    transform: [{scale: this.waveTime[i]}],
                                    zIndex: -1,
-                                   opacity: this.waveTimeOP[i]
+                                   opacity: this.waveTimeOP[i],
+                                   width: this.getSizeOvan(),
+                                   height: this.getSizeOvan(),
+                                   backgroundColor: this.getColor()
                                }]}/>
             )
         }
-
         return arr;
     };
 
+    hanlderClickRun = () => {
+
+        try {
+            this.props.onPress();
+        } catch (e) {
+            console.log(e);
+        }
+
+        if (this.state.run) {
+            this.setState({
+                run: false
+            });
+            this.runAnimation();
+        } else {
+            this.state.funcLoop.stop();
+            this.setValueDefault();
+            this.setState({
+                run: true
+            });
+        }
+    }
+
     render() {
+        console.log(this.props)
+        if (this.getSourceIMG()) {
+            return (
+                <View style={[styles.container]}>
+                    <TouchableOpacity
+                        onPress={this.hanlderClickRun}
+                    >
+                        <Animated.Image
+                            style={{
+                                width: this.getSizeOvan(),
+                                height: this.getSizeOvan(),
+                                borderRadius: this.getSizeOvan()
+                            }}
+                            source={this.getSourceIMG()}
 
-        console.log(this.state.funcLoop);
+                        />
 
-        return (
-            <View style={[styles.container]}>
-                <TouchableOpacity
-                    onPress={() => {
-                        this.state.funcLoop.stop();
-                        this.setValueDefault();
-                    }}
-                >
-                    <Animated.Image
-                        style={{
-                            width: 150,
-                            height: 150,
-                            // transform: [{scale: this.springValue}],
-                            borderRadius: 100
-                        }}
-                        source={{uri: 'https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/81161208_1512678368910055_1072934121040248832_o.jpg?_nc_cat=108&_nc_ohc=IOJPGLSHVv0AQnJ2iOymjuFzQjbXMMXZmotur9NFl8brQIlLxRvICpUYA&_nc_ht=scontent.fhan2-3.fna&oh=f1a7c9eacd5cde24f9dbf461f1e1e259&oe=5E94A057'}}
-                    />
+                        {this.renderWave()}
+                    </TouchableOpacity>
+                </View>
+            );
+        } else {
+            return (
+                <View style={[styles.container]}>
+                    <TouchableOpacity
+                        onPress={this.hanlderClickRun}
+                    >
+                        <View
+                            style={
+                                {
+                                    width: this.getSizeOvan(),
+                                    height: this.getSizeOvan(),
+                                    borderRadius: this.getSizeOvan(),
+                                    backgroundColor: this.getColor(),
+                                    justifyContent: "center",
+                                    alignItems: "center"
+                                }
+                            }>
+                            {this.props.icon}
+                        </View>
 
-                    {this.renderWave()}
-
-                </TouchableOpacity>
-            </View>
-        );
+                        {this.renderWave()}
+                    </TouchableOpacity>
+                </View>
+            );
+        }
     }
 }
 
 
 const styles = StyleSheet.create({
     wave: {
-        backgroundColor: "rgba(33,151,56,0.34)",
-        width: 150,
-        height: 150,
+
         position: 'absolute',
         zIndex: -1,
         borderRadius: 200
@@ -155,9 +224,18 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        // backgroundColor: 'rgba(190,190,190,0.34)'
     },
 });
 
+AnimatedWave.defaultProps = {
+    numberlayer: DEFAULT_NUMBER_LAYER,
+    sizeOvan: DEFAULT_SIZE_OVAN,
+    colorOvan: DEFAULT_COLOR_OVAN,
+    zoom: DEFAULT_SIZE_ZOOM,
+    source: DEFAULT_SOUCE_IMG,
+    icon: DEFAULT_ICON,
+    onPress: () => {
+    }
+}
 
 export default AnimatedWave;

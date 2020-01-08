@@ -1,17 +1,38 @@
 # react-native-animated-wave
 
-## Getting started
+## Installation Instructions
 
-`$ npm install react-native-animated-wave --save`
+> `$ yarn add react-native-animated-wave` 
 
-### Mostly automatic installation
-
-`$ react-native link react-native-animated-wave`
 
 ## Usage
 ```javascript
-import AnimatedWave from 'react-native-animated-wave';
+import AnimatedWave from "react-native-animated-wave";
 
-// TODO: What to do with the module?
-AnimatedWave;
+export default class App extends Component {
+    constructor() {
+        super();
+    }
+
+    render() {
+        return <View style={styles.container}>
+            <AnimatedWave
+                sizeOvan={150}
+                // onPress={() => alert("Hello")}
+                colorOvan={'#bebebe'}
+                zoom={5}
+            />
+        </View>
+    }
+}
 ```
+
+## Explain the attributes
+
+|  properties   | datatypes     | explain  |
+| ------------- |:-------------:| -----:|
+| numberlayer   | number        | number of classes emitted |
+| sizeOvan      | number        |   Center circle size |
+| colorOvan     | string      |    bubble color |
+| zoom          | number      |     |
+| onPress       | arrow function      |     |
