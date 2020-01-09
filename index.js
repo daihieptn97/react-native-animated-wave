@@ -110,7 +110,6 @@ class AnimatedWave extends Component {
     }
 
     runAnimation() {
-
         let a = Animated.loop(
             Animated.parallel([
                 Animated.stagger(600, animWaveTimes),
@@ -121,6 +120,10 @@ class AnimatedWave extends Component {
             funcLoop: a
         });
         a.start();
+    }
+
+    componentWillUnmount() {
+        this.state.funcLoop.stop();
     }
 
     renderWave = () => {
@@ -171,7 +174,7 @@ class AnimatedWave extends Component {
     render() {
         if (this.getSourceIMG()) {
             return (
-                <View style={[styles.container]}>
+                <View style={[styles.container, this.getStyleContainer()]}>
                     <TouchableOpacity
                         onPress={this.hanlderClickRun}
                     >
