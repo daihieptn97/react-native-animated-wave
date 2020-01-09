@@ -28,7 +28,7 @@ const DEFAULT_COLOR_OVAN = 'rgba(33,151,56,0.34)';
 const DEFAULT_SIZE_ZOOM = 2;
 const DEFAULT_SOUCE_IMG = null;
 const DEFAULT_ICON = null;
-
+const DEFAULT_STYLE = {};
 
 class AnimatedWave extends Component {
     constructor(props) {
@@ -106,6 +106,7 @@ class AnimatedWave extends Component {
                 )
             );
         }
+        this.runAnimation();
     }
 
     runAnimation() {
@@ -148,22 +149,26 @@ class AnimatedWave extends Component {
             console.log(e);
         }
 
-        if (this.state.run) {
-            this.setState({
-                run: false
-            });
-            this.runAnimation();
-        } else {
-            this.state.funcLoop.stop();
-            this.setValueDefault();
-            this.setState({
-                run: true
-            });
-        }
+        // if (this.state.run) {
+        //     this.setState({
+        //         run: false
+        //     });
+        //     this.runAnimation();
+        // } else {
+        //     this.state.funcLoop.stop();
+        //     this.setValueDefault();
+        //     this.setState({
+        //         run: true
+        //     });
+        // }
+    }
+
+    getStyleContainer() {
+        const {style} = this.props;
+        return style;
     }
 
     render() {
-        console.log(this.props)
         if (this.getSourceIMG()) {
             return (
                 <View style={[styles.container]}>
@@ -186,7 +191,7 @@ class AnimatedWave extends Component {
             );
         } else {
             return (
-                <View style={[styles.container]}>
+                <View style={[styles.container, this.getStyleContainer()]}>
                     <TouchableOpacity
                         onPress={this.hanlderClickRun}
                     >
@@ -234,6 +239,7 @@ AnimatedWave.defaultProps = {
     zoom: DEFAULT_SIZE_ZOOM,
     source: DEFAULT_SOUCE_IMG,
     icon: DEFAULT_ICON,
+    styleContainer: DEFAULT_STYLE,
     onPress: () => {
     }
 }
