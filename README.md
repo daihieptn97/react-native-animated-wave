@@ -36,3 +36,5 @@ export default class App extends Component {
 | colorOvan     | string      |    bubble color |
 | zoom          | number      |     |
 | onPress       | arrow function      |     |
+| styleContainer       | style      |     |
+| source       | source img      |     |

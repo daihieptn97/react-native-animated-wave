@@ -101,7 +101,7 @@ class AnimatedWave extends Component {
                     this.waveTimeOP[i],
                     {
                         toValue: 0,
-                        duration: i === 0 ? 2000 : 2500,
+                        duration: i === 0 ? 1000 : 1500,
                     }
                 )
             );
